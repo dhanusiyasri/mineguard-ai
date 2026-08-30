@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #020617; /* Slate 950 */
+      --panel: rgba(15, 23, 42, 0.6); /* Slate 900 w/ opacity */
+      --panel-hover: rgba(30, 41, 59, 0.8);
+      --border: rgba(51, 65, 85, 0.5); /* Slate 700 */
+      --border-light: rgba(148, 163, 184, 0.2);
+      
+      /* Vibrant Neon Themes */
+      --teal: #2dd4bf;
+      --sky: #38bdf8;
+      --indigo: #818cf8;
+      --amber: #fbbf24;
+      --purple: #c084fc;
+      --emerald: #34d399;
+      --rose: #fb7185;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: #f8fafc;
+      font-family: 'Inter', system-ui, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header (Sleek Glass) ── */
+    .header {
+      background: rgba(2, 6, 23, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    .badge {
+      background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.2));
+      border: 1px solid rgba(168,85,247,0.3);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #e879f9;
+      letter-spacing: 1px;
+      box-shadow: 0 0 10px rgba(168,85,247,0.1);
+    }
+
+    /* ── Main Layout ── */
+    .layout {
+      display: flex;
+      flex: 1;
+      gap: 28px;
+      padding: 28px;
+      max-width: 1680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Architecture Area ── */
+    .arch-area {
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .svg-layer {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
+    .flow-line {
+      fill: none;
+      stroke: rgba(255,255,255,0.06);
+      stroke-width: 2;
+      transition: all 0.3s ease;
+    }
+    .flow-line-anim {
+      fill: none;
+      stroke-width: 2;
+      stroke-dasharray: 6 12;
+      stroke-linecap: round;
+      animation: flow 1s linear infinite;
+      transition: all 0.3s ease;
+      opacity: 0.7;
+    }
+    @keyframes flow {
+      to { stroke-dashoffset: -18; }
+    }
+
+    /* ── Layer Rows (Glass Panels) ── */
+    .layer-row {
+      display: flex;
+      align-items: stretch;
+      gap: 16px;
+      position: relative;
+      z-index: 10;
+      background: rgba(15, 23, 42, 0.3);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      transition: opacity 0.3s ease, border-color 0.3s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+    }
+
+    .layer-label {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      padding: 16px 8px;
+      flex-shrink: 0;
+      text-align: center;
+      min-width: 44px;
+    }
+
+    /* ── Blocks (High Detail, No Clutter) ── */
+    .blocks-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      flex: 1;
+      align-items: stretch;
+    }
+
+    .arch-block {
+      background: var(--panel);
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 16px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-width: 160px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+      overflow: hidden;
+    }
+    
+    .arch-block::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at top right, rgba(255,255,255,0.05), transparent 70%);
+      pointer-events: none;
+    }
+
+    .arch-block:hover {
+      transform: translateY(-4px) scale(1.02);
+      z-index: 20;
+      background: var(--panel-hover);
+    }
+    .arch-block.active {
+      transform: translateY(-4px) scale(1.02);
+      z-index: 20;
+      background: var(--panel-hover);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .block-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .block-icon { font-size: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); line-height: 1; }
+    .block-title { font-size: 13px; font-weight: 700; letter-spacing: 0.2px; line-height: 1.3; color: #f8fafc; }
+    .block-sub { font-size: 10px; margin-top: 6px; color: #94a3b8; line-height: 1.4; font-weight: 400; flex: 1; }
+    
+    /* Micro-Detail Chips */
+    .chip-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
+    .micro-chip {
+      font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 3px 6px; border-radius: 4px;
+      background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #cbd5e1;
+    }
+
+    /* Container Block (Edge Gateway) */
+    .container-block {
+      flex: 2 1 100%;
+      border: 1px dashed rgba(129, 140, 248, 0.4);
+      background: rgba(15, 23, 42, 0.3);
+      padding: 20px;
+    }
+    .container-title { font-size: 10px; font-weight: 800; letter-spacing: 2px; color: var(--indigo); margin-bottom: 12px; text-transform: uppercase; }
+    .inner-badges { display: flex; flex-wrap: wrap; gap: 8px; }
+    .inner-badge {
+      background: rgba(129, 140, 248, 0.1);
+      border: 1px solid rgba(129, 140, 248, 0.2);
+      font-size: 9px; padding: 5px 10px; border-radius: 6px; color: #a5b4fc; font-weight: 700; letter-spacing: 0.5px;
+    }
+
+    /* ── Theming by Layer ── */
+    .theme-teal { --theme: var(--teal); }
+    .theme-sky { --theme: var(--sky); }
+    .theme-indigo { --theme: var(--indigo); }
+    .theme-amber { --theme: var(--amber); }
+    .theme-purple { --theme: var(--purple); }
+    .theme-emerald { --theme: var(--emerald); }
+
+    .layer-label {
+      background: color-mix(in srgb, var(--theme) 10%, transparent);
+      color: var(--theme);
+      border: 1px solid color-mix(in srgb, var(--theme) 20%, transparent);
+      box-shadow: 0 0 15px color-mix(in srgb, var(--theme) 5%, transparent);
+    }
+    .arch-block:hover, .arch-block.active {
+      border-color: var(--theme);
+      box-shadow: 0 10px 30px color-mix(in srgb, var(--theme) 15%, transparent), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .arch-block:hover .block-title, .arch-block.active .block-title { color: var(--theme); }
+    .arch-block:hover .micro-chip { border-color: color-mix(in srgb, var(--theme) 30%, transparent); color: color-mix(in srgb, var(--theme) 80%, white); }
+
+    /* ── Tech Stack Sidebar (Floating Glass Console) ── */
+    .tech-sidebar {
+      width: 340px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: sticky;
+      top: 100px;
+      height: calc(100vh - 140px);
+      overflow-y: auto;
+      padding-right: 12px;
+    }
+    .tech-sidebar::-webkit-scrollbar { width: 4px; }
+    .tech-sidebar::-webkit-scrollbar-track { background: transparent; }
+    .tech-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+    .tech-title-box {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .tech-title { font-size: 12px; font-weight: 800; letter-spacing: 2px; color: #fff; margin:0; }
+
+    .tech-card {
+      background: var(--panel);
+      border: 1px solid var(--border-light);
+      border-left: 3px solid var(--theme);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      position: relative;
+    }
+    .tech-card:hover { 
+      transform: translateX(-4px); 
+      border-color: var(--theme); 
+      background: var(--panel-hover); 
+      box-shadow: 0 10px 25px color-mix(in srgb, var(--theme) 15%, transparent);
+    }
+    /* Click Affordance Hint */
+    .tech-card::after {
+      content: '↗';
+      position: absolute;
+      top: 14px; right: 14px;
+      color: rgba(255,255,255,0.2);
+      font-size: 14px;
+      transition: all 0.2s ease;
+      font-weight: 800;
+    }
+    .tech-card:hover::after { color: var(--theme); }
+    
+    .tech-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .tech-card-title { font-size: 11px; font-weight: 800; color: #f8fafc; text-transform: uppercase; letter-spacing: 1px; }
+    .tech-card-icon { color: var(--theme); font-size: 14px; }
+    
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tech-tag {
+      font-size: 10px; font-weight: 600;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 5px 10px;
+      border-radius: 6px;
+      color: #cbd5e1;
+      transition: all 0.2s ease;
+    }
+    .tech-card:hover .tech-tag { border-color: color-mix(in srgb, var(--theme) 40%, transparent); color: #fff; }
+
+    /* ── Dimming logic for Interactivity ── */
+    .arch-area.interacting .arch-block:not(.active) { opacity: 0.25; filter: grayscale(70%); }
+    .arch-area.interacting .layer-row { border-color: transparent; box-shadow: none; }
+    
+    /* ── Modal (Premium Blur & Glow) ── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(2, 6, 23, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-backdrop.open { opacity: 1; pointer-events: all; }
+    
+    .modal {
+      background: #0f172a;
+      border-radius: 24px;
+      width: 100%; max-width: 540px;
+      border: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      transform: scale(0.95) translateY(20px);
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+      overflow: hidden;
+    }
+    .modal-backdrop.open .modal { transform: scale(1) translateY(0); }
+    
+    .modal-header-bg {
+      position: absolute; top: 0; left: 0; right: 0; height: 160px;
+      background: radial-gradient(circle at top right, color-mix(in srgb, var(--m-color) 20%, transparent), transparent 70%);
+      pointer-events: none;
+    }
+
+    .modal-close {
+      position: absolute; top: 20px; right: 20px;
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #94a3b8;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+      z-index: 10;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.1); color: #fff; transform: rotate(90deg); }
+    
+    .modal-content { padding: 40px; position: relative; z-index: 1; }
+    .modal-icon { font-size: 48px; margin-bottom: 16px; display: inline-block; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
+    .modal-layer { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; color: var(--m-color); }
+    .modal-title { font-size: 24px; font-weight: 800; margin-bottom: 12px; color: #fff; letter-spacing: -0.5px; }
+    .modal-desc { font-size: 14px; line-height: 1.6; color: #cbd5e1; margin-bottom: 28px; }
+    
+    .modal-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .meta-box { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 16px; border-radius: 12px; }
+    .meta-label { font-size: 10px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .meta-value { font-size: 13px; color: #f1f5f9; font-weight: 600; line-height: 1.4; }
+
+    .modal-tags-container { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; }
+    .modal-tags-title { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #64748b; text-transform: uppercase; margin-bottom: 12px; }
+    .modal-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .m-tag { font-size: 11px; font-weight: 600; background: color-mix(in srgb, var(--m-color) 15%, transparent); border: 1px solid color-mix(in srgb, var(--m-color) 30%, transparent); color: color-mix(in srgb, var(--m-color) 80%, white); padding: 6px 12px; border-radius: 8px; }
+
+    /* Custom Hide Scrollbar for specific wide rows */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="flex items-center gap-4">
+    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xl shadow-[0_0_20px_rgba(99,102,241,0.4)] border border-white/20">⛏</div>
+    <div>
+      <div class="text-lg font-extrabold tracking-wide text-white leading-tight">THE SIMPLEX CREW</div>
+      <div class="text-[11px] text-indigo-300 font-medium tracking-widest uppercase mt-0.5">Architecture & Tech Stack</div>
+    </div>
+  </div>
+  <div class="flex items-center gap-6">
+    <div class="text-[11px] text-slate-400 text-right leading-relaxed border-r border-slate-700 pr-6">
+      <span class="text-white font-bold">Hover</span> to trace data flow<br>
+      <span class="text-white font-bold">Click</span> to inspect blocks & tech stack
+    </div>
+    <div class="badge">SIH 2026 EDITION</div>
+  </div>
+</div>
+
+<div class="layout">
+  
+  <!-- ══════════ ARCHITECTURE DIAGRAM ══════════ -->
+  <div class="arch-area" id="arch-area">
+    <svg class="svg-layer" id="svg-layer"></svg>
+
+    <!-- LAYER 1: SENSING -->
+    <div class="layer-row theme-teal">
+      <div class="layer-label">Sensing</div>
+      <div class="blocks-grid">
+        <div class="arch-block" id="sensor-node">
+          <div class="block-header">
+            <span class="block-icon">📡</span>
+          </div>
+          <div class="block-title">Smart Sensor Node</div>
+          <div class="block-sub">Rugged outdoor IoT hardware capturing real-time surface telemetry.</div>
+          <div class="chip-row">
+            <span class="micro-chip">ESP32</span><span class="micro-chip">IMU</span><span class="micro-chip">Vibration</span><span class="micro-chip">Crack</span>
+          </div>
+        </div>
+        <div class="arch-block" id="surface-deploy">
+          <div class="block-header">
+            <span class="block-icon">🪨</span>
+          </div>
+          <div class="block-title">Surface Deployment</div>
+          <div class="block-sub">Spatially distributed across critical rock strata & coal panels.</div>
+          <div class="chip-row">
+            <span class="micro-chip">Grid Layout</span><span class="micro-chip">IP65</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYER 2: WIRELESS -->
+    <div class="layer-row theme-sky">
+      <div class="layer-label">Wireless</div>
+      <div class="blocks-grid">
+        <div class="arch-block" id="lora-mesh" style="flex: 2;">
+          <div class="block-header">
+            <span class="block-icon">📶</span>
+            <span class="text-[9px] font-bold text-sky-400 bg-sky-900/40 px-2 py-1 rounded border border-sky-700/50 uppercase">Mesh Topology</span>
+          </div>
+          <div class="block-title">LoRa-based Wireless Surface Mesh</div>
+          <div class="block-sub">Low power, long range distributed communication protocol ensuring fault-tolerant transmission.</div>
+          <div class="chip-row">
+            <span class="micro-chip">LoRaWAN</span><span class="micro-chip">Sub-GHz</span><span class="micro-chip">Self-healing</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYER 3: EDGE -->
+    <div class="layer-row theme-indigo">
+      <div class="layer-label">Edge</div>
+      <div class="blocks-grid">
+        <div class="arch-block container-block" id="edge-gw">
+          <div class="container-title">Edge Gateway Processor</div>
+          <div class="inner-badges">
+            <span class="inner-badge">📥 LoRa Rx</span>
+            <span class="inner-badge">🔄 Aggregation</span>
+            <span class="inner-badge">⏱️ Time-Sync</span>
+            <span class="inner-badge">🔋 Health Check</span>
+            <span class="inner-badge">📦 Local Buffer</span>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px; flex:1;">
+          <div class="arch-block" id="local-db">
+            <div class="block-title">Local DB & UI</div>
+            <div class="chip-row"><span class="micro-chip">SQLite</span><span class="micro-chip">Dashboard</span></div>
+          </div>
+          <div class="arch-block" id="cloud-sync">
+            <div class="block-title">Cloud Sync</div>
+            <div class="chip-row"><span class="micro-chip">Offline-First</span><span class="micro-chip">Delta</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYER 4: DATA PROCESSING -->
+    <div class="layer-row theme-amber">
+      <div class="layer-label">Process</div>
+      <div class="blocks-grid flex-nowrap overflow-x-auto no-scrollbar" style="gap: 12px;">
+        <div class="arch-block" id="raw-data" style="min-width:130px;">
+          <div class="block-title">Raw Data</div>
+          <div class="chip-row"><span class="micro-chip">Time-Series</span></div>
+        </div>
+        <div class="arch-block" id="noise-filter" style="min-width:130px;">
+          <div class="block-title">Noise Filter</div>
+          <div class="chip-row"><span class="micro-chip">DSP / SciPy</span></div>
+        </div>
+        <div class="arch-block" id="norm" style="min-width:130px;">
+          <div class="block-title">Normalize</div>
+          <div class="chip-row"><span class="micro-chip">Z-Score</span></div>
+        </div>
+        <div class="arch-block" id="miss-data" style="min-width:130px;">
+          <div class="block-title">Imputation</div>
+          <div class="chip-row"><span class="micro-chip">Interpolate</span></div>
+        </div>
+        <div class="arch-block" id="feat-ext" style="min-width:150px; border-color: rgba(251, 191, 36, 0.5);">
+          <div class="block-title text-amber-400">Feature Extract</div>
+          <div class="chip-row"><span class="micro-chip bg-amber-500/20 text-amber-200">ML Vector</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYER 5: AI & FUSION -->
+    <div class="layer-row theme-purple">
+      <div class="layer-label">AI Engine</div>
+      <div class="blocks-grid">
+        <div style="display:flex; flex-direction:column; gap:12px; flex:1;">
+          <div class="arch-block" id="anomaly">
+            <div class="block-title">Anomaly Detection</div>
+            <div class="chip-row"><span class="micro-chip">Isolation Forest</span></div>
+          </div>
+          <div class="arch-block" id="spatial">
+            <div class="block-title">Spatial Correlation</div>
+            <div class="chip-row"><span class="micro-chip">Node Clustering</span></div>
+          </div>
+          <div class="arch-block" id="temporal">
+            <div class="block-title">Temporal Analysis</div>
+            <div class="chip-row"><span class="micro-chip">Trend Persistence</span></div>
+          </div>
+        </div>
+        
+        <div class="arch-block" id="multi-sensor" style="flex: 1.2; background: linear-gradient(145deg, rgba(30,41,59,0.8), rgba(192,132,252,0.15)); border-color: var(--purple);">
+          <div class="block-header">
+            <span class="block-icon">🔮</span>
+            <span class="text-[9px] font-bold text-purple-300 bg-purple-900/50 px-2 py-1 rounded border border-purple-500/50 uppercase tracking-wider shadow-[0_0_10px_rgba(192,132,252,0.4)]">★ Core Novelty</span>
+          </div>
+          <div class="block-title text-purple-100 text-lg">Multi-Sensor Fusion</div>
+          <div class="block-sub">Bayesian fusion of spatial, temporal, and anomaly data across all inputs.</div>
+          <div class="chip-row"><span class="micro-chip border-purple-500/50 text-purple-200">High Confidence Estimate</span></div>
+        </div>
+
+        <div class="arch-block" id="risk-index" style="flex: 0.8; border-color: rgba(251, 113, 133, 0.4);">
+          <div class="block-header"><span class="block-icon">🎯</span></div>
+          <div class="block-title text-rose-300">Norm. Risk Index</div>
+          <div class="chip-row mt-4 flex-col items-start gap-1">
+            <span class="micro-chip bg-emerald-500/20 text-emerald-300 border-emerald-500/30 w-full text-center">Safe</span>
+            <span class="micro-chip bg-amber-500/20 text-amber-300 border-amber-500/30 w-full text-center">Watch</span>
+            <span class="micro-chip bg-rose-500/20 text-rose-300 border-rose-500/30 w-full text-center">Critical</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAYER 6: GIS & DECISION -->
+    <div class="layer-row theme-emerald">
+      <div class="layer-label">GIS / UI</div>
+      <div class="blocks-grid">
+        <div class="arch-block" id="gis-map">
+          <div class="block-title">GIS Risk Map</div>
+          <div class="chip-row"><span class="micro-chip">Leaflet.js</span><span class="micro-chip">PostGIS</span></div>
+        </div>
+        <div class="arch-block" id="live-map">
+          <div class="block-title">Live Deform. Map</div>
+          <div class="chip-row"><span class="micro-chip">React.js</span><span class="micro-chip">MQTT</span></div>
+        </div>
+        <div class="arch-block" id="early-warn">
+          <div class="block-title">Early Warning</div>
+          <div class="chip-row"><span class="micro-chip">FCM</span><span class="micro-chip">SMS</span></div>
+        </div>
+        <div class="arch-block" id="reference">
+          <div class="block-title">Reference Surveys</div>
+          <div class="chip-row"><span class="micro-chip">InSAR</span><span class="micro-chip">GNSS</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ TECH STACK SIDEBAR (Clickable) ══════════ -->
+  <div class="tech-sidebar">
+    <div class="tech-title-box">
+      <div class="w-6 h-6 rounded bg-indigo-500/20 text-indigo-400 flex items-center justify-center border border-indigo-500/30">⚡</div>
+      <h3 class="tech-title">Tech Stack</h3>
+    </div>
+    
+    <div class="tech-card theme-teal" id="ts-hw">
+      <div class="tech-card-header">
+        <span class="tech-card-icon">⚙️</span>
+        <div class="tech-card-title">Hardware Stack</div>
+      </div>
+      <div class="tech-tags">
+        <span class="tech-tag">ESP32 MCU</span>
+        <span class="tech-tag">SX1278 LoRa</span>
+        <span class="tech-tag">MPU6050 IMU</span>
+        <span class="tech-tag">SW-420 Vib</span>
+        <span class="tech-tag">Displacement</span>
+        <span class="tech-tag">Crack Sensor</span>
+        <span class="tech-tag">Li-ion+Solar</span>
+      </div>
+    </div>
+
+    <div class="tech-card theme-amber" id="ts-proc">
+      <div class="tech-card-header">
+        <span class="tech-card-icon">🧮</span>
+        <div class="tech-card-title">Data Processing</div>
+      </div>
+      <div class="tech-tags">
+        <span class="tech-tag">Python 3.11</span>
+        <span class="tech-tag">NumPy</span>
+        <span class="tech-tag">Pandas</span>
+        <span class="tech-tag">SciPy</span>
+      </div>
+    </div>
+
+    <div class="tech-card theme-purple" id="ts-ai">
+      <div class="tech-card-header">
+        <span class="tech-card-icon">🧠</span>
+        <div class="tech-card-title">AI & Analytics</div>
+      </div>
+      <div class="tech-tags">
+        <span class="tech-tag">Scikit-learn</span>
+        <span class="tech-tag">Isolation Forest</span>
+        <span class="tech-tag">Bayesian Inference</span>
+      </div>
+    </div>
+
+    <div class="tech-card theme-indigo" id="ts-api">
+      <div class="tech-card-header">
+        <span class="tech-card-icon">🔌</span>
+        <div class="tech-card-title">Backend & APIs</div>
+      </div>
+      <div class="tech-tags">
+        <span class="tech-tag">FastAPI</span>
+        <span class="tech-tag">MQTT</span>
+        <span class="tech-tag">Mosquitto</span>
+      </div>
+    </div>
+
+    <div class="tech-card theme-sky" id="ts-db">
+      <div class="tech-card-header">
+        <span class="tech-card-icon">🗄️</span>
+        <div class="tech-card-title">Database</div>
+      </div>
+      <div class="tech-tags">
+        <span class="tech-tag">SQLite</span>
+        <span class="tech-tag">PostgreSQL</span>
+        <span class="tech-tag">PostGIS</span>
+      </div>
+    </div>
+
+    <div class="tech-card theme-emerald" id="ts-ui">
+      <div class="tech-card-header">
+        <span class="tech-card-icon">🖥️</span>
+        <div class="tech-card-title">Frontend & Alerts</div>
+      </div>
+      <div class="tech-tags">
+        <span class="tech-tag">React.js</span>
+        <span class="tech-tag">Leaflet.js</span>
+        <span class="tech-tag">Recharts</span>
+        <span class="tech-tag">Firebase (FCM)</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" id="modal">
+    <div class="modal-header-bg" id="modal-bg"></div>
+    <button class="modal-close" id="modal-close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    
+    <div class="modal-content">
+      <span class="modal-icon" id="modal-icon">⚙️</span>
+      <div class="modal-layer" id="modal-layer">Layer Info</div>
+      <div class="modal-title" id="modal-title">Block Title</div>
+      <div class="modal-desc" id="modal-desc">Detailed explanation goes here.</div>
+      <div class="modal-meta-grid" id="modal-features"></div>
+      
+      <div class="modal-tags-container">
+        <div class="modal-tags-title">Technology Mapping</div>
+        <div class="modal-tags" id="modal-tags"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── MODAL DATA (Includes Architecture Blocks + Tech Stack Cards) ──
+  const blockData = {
+    // Architecture Blocks
+    'sensor-node': { icon: '📡', layer: 'SENSING LAYER', color: 'var(--teal)', title: 'Smart Sensor Node', desc: 'Compact rugged outdoor IoT device capturing real-time telemetry from the mining surface.', feats: [{l:'Sensors',v:'IMU, Vib, Disp, Crack'}, {l:'Power',v:'Solar + Li-ion'}], tags: ['ESP32', 'MPU6050', 'SW-420', 'Crack Sensor'] },
+    'surface-deploy': { icon: '🪨', layer: 'SENSING LAYER', color: 'var(--teal)', title: 'Surface Deployment', desc: '4-6 spatially distributed nodes placed strategically over rock strata and underground coal panels to monitor subsidence.', feats: [{l:'Coverage',v:'Surface Grid'}, {l:'Target',v:'Deformation Zones'}], tags: ['Geospatial Placement'] },
+    'lora-mesh': { icon: '📶', layer: 'WIRELESS LAYER', color: 'var(--sky)', title: 'LoRa Wireless Mesh', desc: 'Low power, long range distributed communication protocol ensuring fault-tolerant data transmission across the remote mine site.', feats: [{l:'Protocol',v:'LoRaWAN / Mesh'}, {l:'Benefit',v:'High Range, Low Power'}], tags: ['SX1278', 'Mesh Routing'] },
+    'edge-gw': { icon: '🔀', layer: 'EDGE LAYER', color: 'var(--indigo)', title: 'Edge Gateway Processor', desc: 'Ingests LoRa packets, performs time-stamping, aggregates data, and maintains a local buffer to prevent data loss.', feats: [{l:'Functions',v:'Rx, Aggregation, Time'}, {l:'Resilience',v:'Local Ring Buffer'}], tags: ['Edge Compute', 'Ingestion API'] },
+    'local-db': { icon: '💾', layer: 'EDGE LAYER', color: 'var(--indigo)', title: 'Local DB & Dashboard', desc: 'Stores telemetry locally using SQLite and serves an offline dashboard for operators on-site.', feats: [{l:'Storage',v:'SQLite'}, {l:'UI',v:'Local Web Dashboard'}], tags: ['SQLite', 'Offline-First'] },
+    'cloud-sync': { icon: '☁️', layer: 'EDGE LAYER', color: 'var(--indigo)', title: 'Cloud Synchronization', desc: 'Enables offline-first operation. Data is pushed to the central backend only when internet connectivity is available.', feats: [{l:'Strategy',v:'Offline-First'}, {l:'Sync',v:'Delta Synchronization'}], tags: ['Cloud Resilience'] },
+    'raw-data': { icon: '📊', layer: 'DATA PROCESSING', color: 'var(--amber)', title: 'Raw Sensor Data', desc: 'Unprocessed time-series data arriving from the gateway.', feats: [{l:'Type',v:'Time-series JSON'}, {l:'Volume',v:'High Frequency'}], tags: ['Telemetry Pipeline'] },
+    'noise-filter': { icon: '🔇', layer: 'DATA PROCESSING', color: 'var(--amber)', title: 'Noise Filtering', desc: 'Removes environmental noise and transient spikes from the raw signal using digital signal processing.', feats: [{l:'Tech',v:'Low-pass / Kalman Filters'}, {l:'Goal',v:'Clean Signal'}], tags: ['SciPy', 'DSP'] },
+    'norm': { icon: '📐', layer: 'DATA PROCESSING', color: 'var(--amber)', title: 'Normalization', desc: 'Standardizes disparate sensor values (e.g., mm, degrees, g-force) into a common scale for ML models.', feats: [{l:'Method',v:'Z-Score / Min-Max'}, {l:'Tool',v:'Scikit-learn'}], tags: ['Data Prep'] },
+    'miss-data': { icon: '🔧', layer: 'DATA PROCESSING', color: 'var(--amber)', title: 'Missing Data Handling', desc: 'Interpolates dropped packets or node outages to maintain a continuous, valid time-series.', feats: [{l:'Method',v:'Linear/Spline Interpolation'}, {l:'Tool',v:'Pandas'}], tags: ['Pandas', 'Imputation'] },
+    'feat-ext': { icon: '🧩', layer: 'DATA PROCESSING', color: 'var(--amber)', title: 'Feature Extraction', desc: 'Derives meaningful variables like tilt rate, vibration RMS, and crack change velocity from cleaned data.', feats: [{l:'Features',v:'Rates, Persistence'}, {l:'Output',v:'ML Feature Vector'}], tags: ['Feature Engineering'] },
+    'anomaly': { icon: '🚨', layer: 'AI ENGINE', color: 'var(--purple)', title: 'Anomaly Detection', desc: 'Unsupervised Isolation Forest model that flags statistically unusual sensor behavior in real-time.', feats: [{l:'Algorithm',v:'Isolation Forest'}, {l:'Detection',v:'Sudden Shifts'}], tags: ['Scikit-learn', 'Unsupervised ML'] },
+    'spatial': { icon: '🗺️', layer: 'AI ENGINE', color: 'var(--purple)', title: 'Spatial Correlation', desc: 'Analyzes relationships between neighboring nodes to distinguish localized noise from actual wide-area deformation.', feats: [{l:'Concept',v:'Node Clustering'}, {l:'Output',v:'Spatial Patterns'}], tags: ['Geo-spatial Math', 'NumPy'] },
+    'temporal': { icon: '📈', layer: 'AI ENGINE', color: 'var(--purple)', title: 'Temporal Analysis', desc: 'Tracks historical persistence and rate of change to identify long-term subsidence trends.', feats: [{l:'Concept',v:'Trend Persistence'}, {l:'Output',v:'Time-based Risk'}], tags: ['Time-Series Analysis'] },
+    'multi-sensor': { icon: '🔮', layer: 'AI ENGINE', color: 'var(--purple)', title: 'Multi-Sensor Fusion', desc: 'Fuses spatial, temporal, and anomaly data across all sensor types to generate a high-confidence deformation estimate.', feats: [{l:'Input',v:'All Extracted Features'}, {l:'Output',v:'Fused Risk Score'}], tags: ['Bayesian Fusion', 'Core Novelty'] },
+    'risk-index': { icon: '🎯', layer: 'AI ENGINE', color: 'var(--rose)', title: 'Normalized Risk Index', desc: 'Pretotype UI demonstrating the proposed AI-driven risk assessment and early-warning workflow using simulated values: Safe (25), Watch (47), Warning (71), Critical (81).', feats: [{l:'Levels',v:'Safe/Watch/Warn/Crit'}, {l:'Format',v:'0-100 Score'}], tags: ['Decision Logic'] },
+    'gis-map': { icon: '🗺️', layer: 'GIS / UI', color: 'var(--emerald)', title: 'GIS Risk Map', desc: 'Geospatial visualization plotting sensor nodes and risk zones over the actual mine topography.', feats: [{l:'Tool',v:'Leaflet.js + PostGIS'}, {l:'View',v:'Spatial Heatmap'}], tags: ['Leaflet.js', 'PostGIS'] },
+    'live-map': { icon: '🔴', layer: 'GIS / UI', color: 'var(--emerald)', title: 'Live Deformation Map', desc: 'Real-time dashboard dynamically updating emerging deformation zones based on MQTT streams.', feats: [{l:'Data Source',v:'MQTT Websockets'}, {l:'UI',v:'React.js'}], tags: ['React.js', 'WebSockets'] },
+    'early-warn': { icon: '🚨', layer: 'GIS / UI', color: 'var(--emerald)', title: 'Early Warning System', desc: 'Automated notification engine dispatching critical alerts to operators via SMS, Email, and Push Notifications.', feats: [{l:'Channels',v:'FCM, SMS, Email'}, {l:'Action',v:'Evacuation/Support'}], tags: ['Firebase', 'Twilio API'] },
+    'reference': { icon: '🛰️', layer: 'GIS / UI', color: 'var(--emerald)', title: 'Reference Surveys', desc: 'Periodic satellite InSAR and GNSS surveys used to calibrate and validate the IoT sensor network findings.', feats: [{l:'Tech',v:'InSAR, GNSS'}, {l:'Purpose',v:'Ground Truth Validation'}], tags: ['Calibration Data'] },
+
+    // Tech Stack Cards
+    'ts-hw': { icon: '⚙️', layer: 'TECH STACK', color: 'var(--teal)', title: 'Low Cost Hardware Stack', desc: 'Custom-designed IoT nodes optimized for harsh mining environments. Utilizes ultra-low power components to maximize battery life.', feats: [{l:'Cost Target',v:'<$50 per node'}, {l:'Power Source',v:'Solar + 18650 Li-ion'}], tags: ['ESP32', 'SX1278', 'MPU6050', 'SW-420', 'Displacement', 'Crack Sensor', 'IP65'] },
+    'ts-proc': { icon: '🧮', layer: 'TECH STACK', color: 'var(--amber)', title: 'Data Processing Pipeline', desc: 'Robust Python-based pipeline for ingesting, cleaning, and normalizing raw telemetry before it hits the AI engine.', feats: [{l:'Throughput',v:'Real-time stream'}, {l:'Resilience',v:'Auto-imputation'}], tags: ['Python 3.11', 'NumPy', 'Pandas', 'SciPy'] },
+    'ts-ai': { icon: '🧠', layer: 'TECH STACK', color: 'var(--purple)', title: 'AI & Analytics Engine', desc: 'The core intelligence layer combining spatial, temporal, and multi-sensor data to predict subsidence and generate a normalized risk index.', feats: [{l:'Model Type',v:'Unsupervised ML'}, {l:'Core Output',v:'Normalized Risk'}], tags: ['Scikit-learn', 'Isolation Forest', 'Bayesian Inference'] },
+    'ts-api': { icon: '🔌', layer: 'TECH STACK', color: 'var(--indigo)', title: 'Backend & APIs', desc: 'High-throughput asynchronous backend designed specifically for real-time IoT event streaming and device management.', feats: [{l:'Architecture',v:'Event-Driven'}, {l:'Speed',v:'Ultra-low Latency'}], tags: ['FastAPI', 'MQTT', 'Eclipse Mosquitto', 'REST APIs'] },
+    'ts-db': { icon: '🗄️', layer: 'TECH STACK', color: 'var(--sky)', title: 'Database & Storage', desc: 'Multi-tiered storage strategy utilizing offline-capable edge SQLite and centralized spatial databases for GIS mapping.', feats: [{l:'Edge Tier',v:'SQLite Local'}, {l:'Cloud Tier',v:'PostgreSQL'}], tags: ['PostgreSQL', 'PostGIS', 'SQLite'] },
+    'ts-ui': { icon: '🖥️', layer: 'TECH STACK', color: 'var(--emerald)', title: 'Frontend & Alerting', desc: 'Interactive React-based web dashboard providing live geospatial tracking, accompanied by instant push-notification alerting.', feats: [{l:'Visualization',v:'Live GIS Map'}, {l:'Alerts',v:'Push / SMS / Email'}], tags: ['React.js', 'Leaflet.js', 'Recharts', 'Firebase', 'Email/SMS APIs'] }
+  };
+
+  // ── CONNECTIONS DATA ──
+  const connections = [
+    { from: 'sensor-node', to: 'lora-mesh', color: 'var(--teal)' },
+    { from: 'surface-deploy', to: 'lora-mesh', color: 'var(--teal)' },
+    { from: 'lora-mesh', to: 'edge-gw', color: 'var(--sky)' },
+    { from: 'edge-gw', to: 'local-db', color: 'var(--indigo)' },
+    { from: 'local-db', to: 'cloud-sync', color: 'var(--indigo)' },
+    { from: 'edge-gw', to: 'raw-data', color: 'var(--indigo)' },
+    { from: 'raw-data', to: 'noise-filter', color: 'var(--amber)' },
+    { from: 'noise-filter', to: 'norm', color: 'var(--amber)' },
+    { from: 'norm', to: 'miss-data', color: 'var(--amber)' },
+    { from: 'miss-data', to: 'feat-ext', color: 'var(--amber)' },
+    { from: 'feat-ext', to: 'anomaly', color: 'var(--amber)' },
+    { from: 'feat-ext', to: 'spatial', color: 'var(--amber)' },
+    { from: 'feat-ext', to: 'temporal', color: 'var(--amber)' },
+    { from: 'anomaly', to: 'multi-sensor', color: 'var(--purple)' },
+    { from: 'spatial', to: 'multi-sensor', color: 'var(--purple)' },
+    { from: 'temporal', to: 'multi-sensor', color: 'var(--purple)' },
+    { from: 'multi-sensor', to: 'risk-index', color: 'var(--purple)' },
+    { from: 'risk-index', to: 'gis-map', color: 'var(--rose)' },
+    { from: 'gis-map', to: 'live-map', color: 'var(--emerald)' },
+    { from: 'live-map', to: 'early-warn', color: 'var(--emerald)' },
+    { from: 'early-warn', to: 'reference', color: 'var(--emerald)' }
+  ];
+
+  const svg = document.getElementById('svg-layer');
+  const archArea = document.getElementById('arch-area');
+
+  function drawLines() {
+    svg.innerHTML = '';
+    const svgRect = svg.getBoundingClientRect();
+
+    connections.forEach((conn, index) => {
+      const el1 = document.getElementById(conn.from);
+      const el2 = document.getElementById(conn.to);
+      if (!el1 || !el2) return;
+
+      const r1 = el1.getBoundingClientRect();
+      const r2 = el2.getBoundingClientRect();
+
+      const x1 = r1.left + r1.width / 2 - svgRect.left;
+      const y1 = r1.top + r1.height / 2 - svgRect.top;
+      const x2 = r2.left + r2.width / 2 - svgRect.left;
+      const y2 = r2.top + r2.height / 2 - svgRect.top;
+
+      let cx1, cy1, cx2, cy2;
+      const isHorizontal = Math.abs(y2 - y1) < Math.abs(x2 - x1) * 0.5;
+
+      if (isHorizontal) {
+        const dist = Math.abs(x2 - x1) * 0.4;
+        cx1 = x1 + (x2 > x1 ? dist : -dist); cy1 = y1;
+        cx2 = x2 + (x1 > x2 ? dist : -dist); cy2 = y2;
+      } else {
+        const dist = Math.abs(y2 - y1) * 0.4;
+        cx1 = x1; cy1 = y1 + (y2 > y1 ? dist : -dist);
+        cx2 = x2; cy2 = y2 + (y1 > y2 ? dist : -dist);
+      }
+
+      const pathData = `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`;
+
+      // Base line
+      const pathBase = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      pathBase.setAttribute('d', pathData);
+      pathBase.setAttribute('class', 'flow-line');
+      pathBase.setAttribute('data-id', `conn-${index}`);
+      pathBase.setAttribute('data-from', conn.from);
+      pathBase.setAttribute('data-to', conn.to);
+      pathBase.setAttribute('data-color', conn.color);
+      
+      // Animated dashed line overlay
+      const pathAnim = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      pathAnim.setAttribute('d', pathData);
+      pathAnim.setAttribute('class', 'flow-line-anim');
+      pathAnim.setAttribute('data-id', `conn-${index}-anim`);
+      pathAnim.setAttribute('data-from', conn.from);
+      pathAnim.setAttribute('data-to', conn.to);
+      pathAnim.setAttribute('stroke', conn.color);
+
+      svg.appendChild(pathBase);
+      svg.appendChild(pathAnim);
+    });
+  }
+
+  window.addEventListener('resize', drawLines);
+  setTimeout(drawLines, 150);
+
+  // ── INTERACTIVITY (Hover & Highlight) ──
+  const blocks = document.querySelectorAll('.arch-block');
+  
+  blocks.forEach(block => {
+    block.addEventListener('mouseenter', () => {
+      archArea.classList.add('interacting');
+      const id = block.id;
+      block.classList.add('active');
+
+      const connectedIds = new Set();
+      connections.forEach(conn => {
+        if (conn.from === id) connectedIds.add(conn.to);
+        if (conn.to === id) connectedIds.add(conn.from);
+      });
+
+      connectedIds.forEach(cid => {
+        const el = document.getElementById(cid);
+        if(el) el.classList.add('active');
+      });
+
+      const pathsBase = svg.querySelectorAll('.flow-line');
+      pathsBase.forEach(p => {
+        if (p.getAttribute('data-from') === id || p.getAttribute('data-to') === id) {
+          p.style.stroke = p.getAttribute('data-color');
+          p.style.strokeWidth = '3';
+          p.style.opacity = '1';
+        } else {
+          p.style.opacity = '0.05';
+        }
+      });
+
+      const pathsAnim = svg.querySelectorAll('.flow-line-anim');
+      pathsAnim.forEach(p => {
+        if (p.getAttribute('data-from') === id || p.getAttribute('data-to') === id) {
+          p.style.strokeWidth = '3';
+          p.style.opacity = '1';
+          p.style.filter = 'drop-shadow(0 0 4px currentColor)';
+        } else {
+          p.style.opacity = '0';
+        }
+      });
+    });
+
+    block.addEventListener('mouseleave', () => {
+      archArea.classList.remove('interacting');
+      blocks.forEach(b => b.classList.remove('active'));
+      
+      svg.querySelectorAll('.flow-line').forEach(p => {
+        p.style.stroke = 'rgba(255,255,255,0.06)';
+        p.style.strokeWidth = '2';
+        p.style.opacity = '1';
+      });
+      svg.querySelectorAll('.flow-line-anim').forEach(p => {
+        p.style.strokeWidth = '2';
+        p.style.opacity = '0.7';
+        p.style.filter = 'none';
+      });
+    });
+  });
+
+  // ── CLICK TO OPEN MODAL (Handles both Architecture Blocks AND Tech Stack Cards) ──
+  const interactiveElements = document.querySelectorAll('.arch-block, .tech-card');
+
+  interactiveElements.forEach(el => {
+    el.addEventListener('click', () => {
+      const data = blockData[el.id];
+      if(!data) return;
+
+      document.getElementById('modal').style.setProperty('--m-color', data.color);
+      document.getElementById('modal-icon').textContent = data.icon;
+      document.getElementById('modal-layer').textContent = data.layer;
+      document.getElementById('modal-title').textContent = data.title;
+      document.getElementById('modal-desc').textContent = data.desc;
+
+      const featsHtml = data.feats.map(f => `
+        <div class="meta-box">
+          <div class="meta-label">${f.l}</div>
+          <div class="meta-value">${f.v}</div>
+        </div>
+      `).join('');
+      document.getElementById('modal-features').innerHTML = featsHtml;
+
+      const tagsHtml = data.tags.map(t => `<span class="m-tag">${t}</span>`).join('');
+      document.getElementById('modal-tags').innerHTML = tagsHtml;
+
+      document.getElementById('modal').style.borderTop = `2px solid ${data.color}`;
+      document.getElementById('modal-backdrop').classList.add('open');
+    });
+  });
+
+  // ── FIX: ROBUST MODAL CLOSE LOGIC ──
+  const closeBtn = document.getElementById('modal-close');
+  const backdrop = document.getElementById('modal-backdrop');
+  
+  const closeFn = () => backdrop.classList.remove('open');
+
+  closeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeFn();
+  });
+
+  backdrop.addEventListener('click', (e) => {
+    if(e.target === backdrop) closeFn();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && backdrop.classList.contains('open')) closeFn();
+  });
+
+</script>
+</body>
+</html>
